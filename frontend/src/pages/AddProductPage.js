@@ -1,58 +1,47 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function AddProductPage() {
   const [product, setProduct] = useState({
-    name: "",
     bodega: "",
-    marca: "",
+    name: "",
     varietal: "",
     tipoDeVino: "",
     volumen: "",
     año: "",
     stock: "",
+    costo: "",
+    deposito: "",
   });
-
   const navigate = useNavigate();
 
-  // Manejar cambios en los campos del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProduct({ ...product, [name]: value });
   };
 
-  // Manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await axios.post("http://localhost:5000/inventory", product);
-      alert("Producto agregado exitosamente");
-      navigate("/");
+      toast.success("Producto agregado exitosamente", {
+        position: "top-center",
+      });
+      setTimeout(() => navigate("/"), 2000); // Redirigir después de 2 segundos
     } catch (error) {
-      alert("Error al agregar el producto");
-      console.error(error);
+      toast.error("Error al agregar el producto. Inténtalo de nuevo.", {
+        position: "top-center",
+      });
     }
   };
 
   return (
     <div className="container mt-5">
-      <h2>Agregar Nuevo Producto</h2>
-      <form onSubmit={handleSubmit}>
-        {/* Campo Nombre */}
-        <div className="mb-3">
-          <label className="form-label">Nombre</label>
-          <input
-            type="text"
-            className="form-control"
-            name="name"
-            value={product.name}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        {/* Campo Bodega */}
+      <h2 className="text-center mb-4">Agregar Nuevo Producto</h2>
+      <form onSubmit={handleSubmit} className="p-3 border rounded">
         <div className="mb-3">
           <label className="form-label">Bodega</label>
           <input
@@ -65,20 +54,18 @@ function AddProductPage() {
           />
         </div>
 
-        {/* Campo Marca */}
         <div className="mb-3">
-          <label className="form-label">Marca</label>
+          <label className="form-label">Nombre</label>
           <input
             type="text"
             className="form-control"
-            name="marca"
-            value={product.marca}
+            name="name"
+            value={product.name}
             onChange={handleChange}
             required
           />
         </div>
 
-        {/* Campo Varietal */}
         <div className="mb-3">
           <label className="form-label">Varietal</label>
           <input
@@ -91,7 +78,6 @@ function AddProductPage() {
           />
         </div>
 
-        {/* Campo Tipo de Vino */}
         <div className="mb-3">
           <label className="form-label">Tipo de Vino</label>
           <input
@@ -104,7 +90,6 @@ function AddProductPage() {
           />
         </div>
 
-        {/* Campo Volumen */}
         <div className="mb-3">
           <label className="form-label">Volumen (ml)</label>
           <input
@@ -117,7 +102,6 @@ function AddProductPage() {
           />
         </div>
 
-        {/* Campo Año */}
         <div className="mb-3">
           <label className="form-label">Año</label>
           <input
@@ -130,7 +114,6 @@ function AddProductPage() {
           />
         </div>
 
-        {/* Campo Stock */}
         <div className="mb-3">
           <label className="form-label">Stock</label>
           <input
@@ -143,11 +126,45 @@ function AddProductPage() {
           />
         </div>
 
-        {/* Botón para agregar producto */}
-        <button type="submit" className="btn btn-primary">
-          Agregar Producto
-        </button>
+        <div className="mb-3">
+          <label className="form-label">Costo</label>
+          <input
+            type="number"
+            className="form-control"
+            name="costo"
+            value={product.costo}
+            onChange={handleChange}
+            step="0.01"
+            required
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Depósito</label>
+          <input
+            type="text"
+            className="form-control"
+            name="deposito"
+            value={product.deposito}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="d-flex justify-content-between">
+          <button type="submit" className="btn btn-primary">
+            Guardar
+          </button>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => navigate("/")}
+          >
+            Cancelar
+          </button>
+        </div>
       </form>
+      <ToastContainer />
     </div>
   );
 }
